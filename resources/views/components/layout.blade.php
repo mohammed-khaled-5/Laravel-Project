@@ -36,8 +36,12 @@
         </span>
       </li>
       <li>
+        <a href="/billing" class="hover:text-laravel"><i class="fa-solid fa-coins"></i> Plan</a>
+      </li>
+      <li></li>
         <a href="/listings/manage" class="hover:text-laravel"><i class="fa-solid fa-gear"></i> Manage Listings</a>
       </li>
+
       <li>
         <form class="inline" method="POST" action="/logout">
           @csrf

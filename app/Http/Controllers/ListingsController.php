@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Listing;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,26 +31,33 @@ class ListingsController extends Controller
 
     //store listing data
     public function store(Request $request) {
-        $formFields = $request->validate([
-            'title' => 'required',
-            'company' => ['required', 'unique:listings,company'],
-            'location' => 'required',
-            'website' => 'required',
-            'email' => ['required', 'email'],
-            'tags' => 'required',
-            'description' => 'required'
-        ]);
+    $user = Auth::user();
 
-        if($request->hasFile('logo')) {
-            $formFields['logo'] = $request->file('logo')->store('logos', 'public');
-        }
-
-        $formFields['user_id'] = Auth::id();
-
-        Listing::create($formFields);
-
-        return redirect('/')->with('message', 'Listing created successfully!');
+    //check if free user has reached limit
+    if ($user->isFree() && $user->listings()->count() >= 1) {
+        return back()->with('message', 'Free plan limit reached. Please upgrade to Premium!');
     }
+
+    $formFields = $request->validate([
+        'title' => 'required',
+        'company' => ['required', 'unique:listings,company'],
+        'location' => 'required',
+        'website' => 'required',
+        'email' => ['required', 'email'],
+        'tags' => 'required',
+        'description' => 'required'
+    ]);
+
+    if($request->hasFile('logo')) {
+        $formFields['logo'] = $request->file('logo')->store('logos', 'public');
+    }
+
+    $formFields['user_id'] = Auth::id();
+
+    Listing::create($formFields);
+
+    return redirect('/')->with('message', 'Listing created successfully!');
+}
 
         //show edit form
         public function edit(Listing $listing) {

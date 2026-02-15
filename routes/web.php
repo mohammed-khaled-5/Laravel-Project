@@ -64,3 +64,38 @@ Route::get('/reset-password/{token}', function (string $token) {
 return view('auth.reset-password', ['token' => $token]);
 })->middleware('guest')->name('password.reset');
 
+//billing page
+Route::get('/billing', function (Request $request) {
+    $user = $request->user();
+
+    // If they just came back from a successful payment,
+    // we refresh the user model to catch the webhook's changes
+    if ($request->has('success')) {
+        // Give the webhook a split second to finish the DB update
+        usleep(500000); // 0.5 seconds
+        $user->refresh();
+    }
+
+    return view('users.billing');
+})->middleware('auth')->name('billing');
+
+//subscribe route
+Route::post('/subscribe', function (Request $request) {
+    $user = $request->user();
+
+    // 1. Safety Check: If they are already premium, don't let them subscribe again
+    if ($user->plan === 'premium' || $user->subscribed('default')) {
+        return redirect()->route('billing')->with('message', 'You are already a Premium member!');
+    }
+
+    // 2. Proceed to Stripe Checkout
+    return $user
+        ->newSubscription('default', 'price_1T15ZE1MuSmW3sGsON42FWOX')
+        ->checkout([
+            'success_url' => route('billing', ['success' => 1]),
+            'cancel_url' => route('billing', ['error' => 1]),
+        ]);
+})->middleware('auth')->name('subscribe');
+
+
+Route::post('/stripe/webhook', [\Laravel\Cashier\Http\Controllers\WebhookController::class, 'handleWebhook']);
