@@ -37,3 +37,6 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.
 
 # Expose port 80
 EXPOSE 80
+
+# The Final Fix: Force MPM modules at runtime
+CMD ["/bin/bash", "-c", "a2dismod mpm_event mpm_worker || true && a2enmod mpm_prefork && exec apache2-foreground"]
