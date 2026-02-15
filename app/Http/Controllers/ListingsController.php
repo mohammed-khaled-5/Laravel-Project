@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Listing;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-use function Symfony\Component\String\b;
 
 class ListingsController extends Controller
 {
@@ -44,6 +44,8 @@ class ListingsController extends Controller
             $formFields['logo'] = $request->file('logo')->store('logos', 'public');
         }
 
+        $formFields['user_id'] = Auth::id();
+
         Listing::create($formFields);
 
         return redirect('/')->with('message', 'Listing created successfully!');
@@ -56,7 +58,12 @@ class ListingsController extends Controller
 
         //update listing data
         public function update(Request $request, Listing $listing) {
-            $formFields = $request->validate([
+            //make sure logged in user is owner
+            if($listing->user_id != Auth::id()) {
+                abort(403, 'Unauthorized Action');
+            }
+
+        $formFields = $request->validate([
                 'title' => 'required',
                 'company' => ['required'],
                 'location' => 'required',
@@ -76,7 +83,17 @@ class ListingsController extends Controller
         }
         //delete listing
         public function destroy(Listing $listing) {
+            if($listing->user_id != Auth::id()) {
+                abort(403, 'Unauthorized Action');
+            }
             $listing->delete();
             return redirect('/')->with('message', 'Listing deleted successfully!');
+        }
+
+        //manage listings
+        public function manage() {
+            return view('listings.manage', [
+                'listings' => Listing::where('user_id', Auth::id())->get()
+            ]);
         }
 }

@@ -7,25 +7,28 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [ListingsController::class, 'index']);
 
 //create listing (display form to create listing)
-Route::get('/listings/create', [ListingsController::class, 'create']);
+Route::get('/listings/create', [ListingsController::class, 'create'])->middleware('auth');
 
 //store listing data(submit form data)
-Route::post('/listings', [ListingsController::class, 'store']);
+Route::post('/listings', [ListingsController::class, 'store'])->middleware('auth');
+
+//manage listings
+Route::get('/listings/manage', [ListingsController::class, 'manage'])->middleware('auth');
 
 //show edit form
-Route::get('/listings/{listing}/edit', [ListingsController::class, 'edit']);
+Route::get('/listings/{listing}/edit', [ListingsController::class, 'edit'])->middleware('auth');
 
 //update listing data
-Route::put('/listings/{listing}', [ListingsController::class, 'update']);
+Route::put('/listings/{listing}', [ListingsController::class, 'update'])->middleware('auth');
 
 //delete listing
-Route::delete('/listings/{listing}', [ListingsController::class, 'destroy']);
+Route::delete('/listings/{listing}', [ListingsController::class, 'destroy'])->middleware('auth');
 
 //show single listing
 Route::get('/listings/{listing}', [ListingsController::class, 'show']);
 
 //show register form
-Route::get('/register', [UserController::class, 'create']);
+Route::get('/register', [UserController::class, 'create'])->middleware('guest');
 
 //create new user (submit registration form)
 Route::post('/users', [UserController::class, 'store']);
@@ -34,9 +37,8 @@ Route::post('/users', [UserController::class, 'store']);
 Route::post('/logout', [UserController::class, 'logout']);
 
 //show login form
-Route::get('/login', [UserController::class, 'login']);
+Route::get('/login', [UserController::class, 'login'])->name('login')->middleware('guest');
 
 //login user
-Route::post('/login', [UserController::class, 'authenticate']);
-
+Route::post('/users/authenticate', [UserController::class, 'authenticate'])->name('login');
 

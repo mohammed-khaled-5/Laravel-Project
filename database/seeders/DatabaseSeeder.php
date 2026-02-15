@@ -18,9 +18,16 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory(10)->create();
+        $user = User::factory()->create(
+            [
+                'name' => 'John Doe',
+                'email' => 'email1@emailcom',
+                'password' => bcrypt('password')
+            ]
+        );
         Listing::create(
             [
+                'user_id' => $user->id,
                 'title' => 'Laravel Senior Developer',
                 'tags' => 'laravel, javascript',
                 'company' => 'Acme Corp',
@@ -32,6 +39,7 @@ class DatabaseSeeder extends Seeder
         );
         Listing::create(
             [
+                'user_id' => $user->id,
                 'title' => 'Junior Developer',
                 'tags' => 'laravel, php, javascript',
                 'company' => 'Wonka Industries',
@@ -43,6 +51,7 @@ class DatabaseSeeder extends Seeder
         );
         Listing::create(
             [
+                'user_id' => $user->id,
                 'title' => 'Backend Developer',
                 'tags' => 'laravel, php, api',
                 'company' => 'Skynet Systems',
@@ -55,6 +64,7 @@ class DatabaseSeeder extends Seeder
 
         Listing::create(
             [
+                'user_id' => $user->id,
                 'title' => 'Laravel Developer',
                 'tags' => 'laravel, vue, javascript',
                 'company' => 'Wayne Enterprises',
@@ -66,6 +76,7 @@ class DatabaseSeeder extends Seeder
         );
         Listing::create(
             [
+                'user_id' => $user->id,
                 'title' => 'Full-Stack Engineer',
                 'tags' => 'laravel, backend ,api',
                 'company' => 'Stark Industries',
