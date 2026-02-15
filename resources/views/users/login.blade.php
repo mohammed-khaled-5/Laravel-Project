@@ -34,6 +34,14 @@
           Sign In
         </button>
       </div>
+      <div class="mt-8">
+    <p>
+        Forget your password?
+        <a href="{{ route('password.request') }}" class="text-laravel hover:underline">
+            Reset Password
+        </a>
+    </p>
+</div>
 
       <div class="mt-8">
         <p>

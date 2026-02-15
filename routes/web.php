@@ -3,6 +3,10 @@
 use App\Http\Controllers\ListingsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
+use App\Http\Controllers\Auth\PasswordResetController;
+
 //get all listings
 Route::get('/', [ListingsController::class, 'index']);
 
@@ -41,4 +45,22 @@ Route::get('/login', [UserController::class, 'login'])->name('login')->middlewar
 
 //login user
 Route::post('/users/authenticate', [UserController::class, 'authenticate'])->name('login');
+
+//Show the "Forgot Password" form
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->middleware('guest')->name('password.request');
+
+//Handle the email submission
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])
+    ->middleware('guest')->name('password.email');
+
+//Handle the actual password update
+Route::post('/reset-password', [PasswordResetController::class, 'updatePassword'])
+    ->middleware('guest')->name('password.update');
+
+//Show the "Reset Password" form (from the email link)
+Route::get('/reset-password/{token}', function (string $token) {
+return view('auth.reset-password', ['token' => $token]);
+})->middleware('guest')->name('password.reset');
 
