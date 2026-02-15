@@ -1,4 +1,16 @@
 FROM php:8.2-apache
+# 1. Update the system dependencies line
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    git \
+    curl
+
+# 2. Update the PHP extensions line to include bcmath
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
