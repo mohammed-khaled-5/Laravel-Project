@@ -34,7 +34,7 @@
     <button
       @click="$dispatch('toggle-chat')"
       type="button"
-      class="fixed bottom-10 right-10 bg-white text-laravel rounded-full shadow-2xl p-4 border-2 border-laravel hover:scale-110 active:scale-95 transition-all cursor-pointer z-[99999]"
+      class="fixed bottom-16 right-10 bg-white text-laravel rounded-full shadow-2xl p-4 border-2 border-laravel hover:scale-110 active:scale-95 transition-all cursor-pointer z-[99999]"
       style="pointer-events: auto !important; isolation: isolate !important;">
         <i class="fa-solid fa-comments fa-2x"></i>
     </button>
