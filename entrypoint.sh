@@ -4,6 +4,9 @@
 php artisan config:clear
 php artisan cache:clear
 
+# Force create the link so logos are visible
+php artisan storage:link --force
+
 # 2. Fix the Apache MPM conflict
 a2dismod mpm_event mpm_worker || true
 a2enmod mpm_prefork || true
